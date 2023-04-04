@@ -1,0 +1,43 @@
+name: 🔨 Build Test
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:  
+  build:
+    name: Test Builds
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest-16-cores, windows-latest-8-cores, macOS-latest]
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: go build ./...
+        working-directory: v2/
+
+      - name: Run tests
+        uses: nick-invision/retry@v2
+        with:
+          timeout_seconds: 360
+          max_attempts: 3
+          command: cd v2; go test ./... -v
+
+      - name: Integration Tests
+        env:
+          GH_ACTION: true
+          DNSREPO_API_KEY: ${{secrets.DNSREPO_API}}
+        run: bash run.sh
+        working-directory: v2/cmd/integration-test/
+
+      - name: Race Condition Tests
+        run: go build -race ./...
+        working-directory: v2/
