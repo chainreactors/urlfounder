@@ -9,13 +9,9 @@ import (
 
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping/sources/zoomeye"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping/sources/zoomeyeapi"
 )
 
 var AllSources = [...]subscraping.Source{
-	&zoomeye.Source{},
-	&zoomeyeapi.Source{},
 	&webarchive.Source{},
 	// &threatminer.Source{}, // failing  api
 	// &reconcloud.Source{}, // failing due to cloudflare bot protection

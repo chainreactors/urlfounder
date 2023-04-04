@@ -9,11 +9,6 @@ import (
 	"time"
 )
 
-// search results
-type webarchiveResults struct {
-	Matches []string
-}
-
 // Source is the passive scraping agent
 type Source struct {
 	timeTaken time.Duration
