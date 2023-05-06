@@ -58,21 +58,6 @@ func (s *Source) Run(ctx context.Context, domain string, session *subscraping.Se
 		resp.Body.Close()
 
 		for _, r := range res[1:] {
-			//url := r[0]
-			//resp, err := session.Get(ctx, url, "", headers)
-			//if err != nil {
-			//	results <- subscraping.Result{Source: s.Name(), Type: subscraping.Error, Error: err}
-			//	s.errors++
-			//	session.DiscardHTTPResponse(resp)
-			//	continue
-			//}
-			//
-			//statusCode := resp.StatusCode
-			//resp.Body.Close()
-			//
-			//results <- subscraping.Result{Source: s.Name(), Type: subscraping.Subdomain, Value: fmt.Sprintf("%s[%d]", url, statusCode)}
-			//s.results++
-			//旧的
 			results <- subscraping.Result{Source: s.Name(), Type: subscraping.Subdomain, Value: r[0]}
 			s.results++
 		}
