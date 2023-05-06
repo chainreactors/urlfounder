@@ -25,10 +25,12 @@ type jsonSourceResult struct {
 }
 
 type jsonSourceIPResult struct {
-	Host   string `json:"host"`
-	IP     string `json:"ip"`
-	Input  string `json:"input"`
-	Source string `json:"source"`
+	Host       string `json:"host"`
+	IP         string `json:"ip"`
+	Input      string `json:"input"`
+	Source     string `json:"source"`
+	StatusCode string `json:"statuscode"`
+	UrlTitle   string `json:"urltitle"`
 }
 
 type jsonSourcesResult struct {
@@ -70,58 +72,6 @@ func (o *OutputWriter) createFile(filename string, appendToFile bool) (*os.File,
 	}
 
 	return file, nil
-}
-
-// WriteHostIP writes the output list of subdomain to an io.Writer
-func (o *OutputWriter) WriteHostIP(input string, results map[string]resolve.Result, writer io.Writer) error {
-	var err error
-	if o.JSON {
-		err = writeJSONHostIP(input, results, writer)
-	} else {
-		err = writePlainHostIP(input, results, writer)
-	}
-	return err
-}
-
-func writePlainHostIP(_ string, results map[string]resolve.Result, writer io.Writer) error {
-	bufwriter := bufio.NewWriter(writer)
-	sb := &strings.Builder{}
-
-	for _, result := range results {
-		sb.WriteString(result.Host)
-		sb.WriteString(",")
-		sb.WriteString(result.IP)
-		sb.WriteString(",")
-		sb.WriteString(result.Source)
-		sb.WriteString("\n")
-
-		_, err := bufwriter.WriteString(sb.String())
-		if err != nil {
-			bufwriter.Flush()
-			return err
-		}
-		sb.Reset()
-	}
-	return bufwriter.Flush()
-}
-
-func writeJSONHostIP(input string, results map[string]resolve.Result, writer io.Writer) error {
-	encoder := jsoniter.NewEncoder(writer)
-
-	var data jsonSourceIPResult
-
-	for _, result := range results {
-		data.Host = result.Host
-		data.IP = result.IP
-		data.Input = input
-		data.Source = result.Source
-
-		err := encoder.Encode(&data)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 // WriteHostNoWildcard writes the output list of subdomain with nW flag to an io.Writer
@@ -234,4 +184,115 @@ func writeSourcePlainHost(_ string, sourceMap map[string]map[string]struct{}, wr
 		sb.Reset()
 	}
 	return bufwriter.Flush()
+}
+
+// WriteStatusCode writes the output list of urls request status code to an io.Writer
+func (o *OutputWriter) WriteStatusCode(input string, results map[string]resolve.Result, writer io.Writer) error {
+	var err error
+	if o.JSON {
+		err = writeJSONStatusCode(input, results, writer)
+	} else {
+		err = writePlainStatusCode(input, results, writer)
+	}
+	return err
+}
+
+// writePlainStatusCode writes the plain text output list of urls request status code to an io.Writer
+func writePlainStatusCode(_ string, results map[string]resolve.Result, writer io.Writer) error {
+	bufwriter := bufio.NewWriter(writer)
+	st := &strings.Builder{}
+
+	for _, result := range results {
+		st.WriteString(result.Host)
+		st.WriteString(" ")
+		st.WriteString(result.StatusCode)
+		st.WriteString(" ")
+		st.WriteString(result.Source)
+		st.WriteString("\n")
+
+		_, err := bufwriter.WriteString(st.String())
+		if err != nil {
+			bufwriter.Flush()
+			return err
+		}
+		st.Reset()
+	}
+	return bufwriter.Flush()
+}
+
+// writeJSONStatusCode writes the JSON output list of urls request status code to an io.Writer
+func writeJSONStatusCode(input string, results map[string]resolve.Result, writer io.Writer) error {
+	encoder := jsoniter.NewEncoder(writer)
+
+	var data jsonSourceIPResult
+
+	for _, result := range results {
+		data.Host = result.Host
+		data.StatusCode = result.StatusCode
+		data.Input = input
+		data.Source = result.Source
+
+		err := encoder.Encode(&data)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// WriteStatusCodeAndTitle writes the output list of urls titles to an io.Writer
+func (o *OutputWriter) WriteStatusCodeAndTitle(input string, results map[string]resolve.Result, writer io.Writer) error {
+	var err error
+	if o.JSON {
+		err = writeJSONStatusCodeAndTitle(input, results, writer)
+	} else {
+		err = writePlainStatusCodeAndTitle(input, results, writer)
+	}
+	return err
+}
+
+// writePlainStatusCodeAndTitle writes the plain text output list of urls titles to an io.Writer
+func writePlainStatusCodeAndTitle(_ string, results map[string]resolve.Result, writer io.Writer) error {
+	bufwriter := bufio.NewWriter(writer)
+	ut := &strings.Builder{}
+
+	for _, result := range results {
+		ut.WriteString(result.Host)
+		ut.WriteString(" ")
+		ut.WriteString(result.StatusCode)
+		ut.WriteString(" ")
+		ut.WriteString(result.UrlTitle)
+		ut.WriteString(" ")
+		ut.WriteString(result.Source)
+		ut.WriteString("\n")
+
+		_, err := bufwriter.WriteString(ut.String())
+		if err != nil {
+			bufwriter.Flush()
+			return err
+		}
+		ut.Reset()
+	}
+	return bufwriter.Flush()
+}
+
+// writeJSONStatusCodeAndTitle writes the JSON output list of urls titles to an io.Writer
+func writeJSONStatusCodeAndTitle(input string, results map[string]resolve.Result, writer io.Writer) error {
+	encoder := jsoniter.NewEncoder(writer)
+
+	var data jsonSourceIPResult
+
+	for _, result := range results {
+		data.Host = result.Host
+		data.StatusCode = result.StatusCode
+		data.UrlTitle = result.UrlTitle
+		data.Input = input
+		data.Source = result.Source
+
+		err := encoder.Encode(&data)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

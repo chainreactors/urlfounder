@@ -26,8 +26,8 @@ func (r *Runner) EnumerateSingleDomain(domain string, writers []io.Writer) error
 func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string, writers []io.Writer) error {
 	gologger.Info().Msgf("Enumerating urls for %s\n", domain)
 
-	// Check if the user has asked to remove wildcards explicitly.
-	// If yes, create the resolution pool and get the wildcards for the current domain
+	//Check if the user has asked to remove wildcards explicitly.
+	//If yes, create the resolution pool and get the wildcards for the current domain
 	var resolutionPool *resolve.ResolutionPool
 	if r.options.RemoveWildcard {
 		resolutionPool = r.resolverClient.NewResolutionPool(r.options.Threads, r.options.RemoveWildcard)
@@ -44,9 +44,9 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
-	// Create a unique map for filtering duplicate subdomains out
+	// Create a unique map for filtering duplicate subdomains out 过滤重复子域
 	uniqueMap := make(map[string]resolve.HostEntry)
-	// Create a map to track sources for each host
+	// Create a map to track sources for each host 跟踪host源
 	sourceMap := make(map[string]map[string]struct{})
 	// Process the results in a separate goroutine
 	go func() {
@@ -55,7 +55,7 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 			case subscraping.Error:
 				gologger.Warning().Msgf("Could not run source %s: %s\n", result.Source, result.Error)
 			case subscraping.Subdomain:
-				// Validate the subdomain found and remove wildcards from
+				// 验证找到的子域并删除通配符
 				subdomain := strings.ReplaceAll(strings.ToLower(result.Value), "*.", "")
 
 				if matchSubdomain := r.filterAndMatchSubdomain(subdomain); matchSubdomain {
@@ -112,13 +112,16 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 			}
 		}
 	}
+
 	wg.Wait()
 	outputWriter := NewOutputWriter(r.options.JSON)
 	// Now output all results in output writers
 	var err error
 	for _, writer := range writers {
-		if r.options.HostIP {
-			err = outputWriter.WriteHostIP(domain, foundResults, writer)
+		if r.options.StatusCode && r.options.Title {
+			err = outputWriter.WriteStatusCodeAndTitle(domain, foundResults, writer)
+		} else if r.options.StatusCode {
+			err = outputWriter.WriteStatusCode(domain, foundResults, writer)
 		} else {
 			if r.options.RemoveWildcard {
 				err = outputWriter.WriteHostNoWildcard(domain, foundResults, writer)
@@ -150,7 +153,7 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 			r.options.ResultCallback(&v)
 		}
 	}
-	gologger.Info().Msgf("Found %d subdomains for %s in %s\n", numberOfSubDomains, domain, duration)
+	gologger.Info().Msgf("Found %d urls for %s in %s\n", numberOfSubDomains, domain, duration)
 
 	if r.options.Statistics {
 		gologger.Info().Msgf("Printing source statistics for %s", domain)
