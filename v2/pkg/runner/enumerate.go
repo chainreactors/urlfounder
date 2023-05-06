@@ -164,20 +164,20 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 }
 
 func (r *Runner) filterAndMatchSubdomain(subdomain string) bool {
-	if r.options.filterRegexes != nil {
-		for _, filter := range r.options.filterRegexes {
-			if m := filter.MatchString(subdomain); m {
-				return false
-			}
-		}
-	}
-	if r.options.matchRegexes != nil {
-		for _, match := range r.options.matchRegexes {
-			if m := match.MatchString(subdomain); m {
-				return true
-			}
-		}
-		return false
-	}
+	//if r.options.filterRegexes != nil {
+	//	for _, filter := range r.options.filterRegexes {
+	//		if m := filter.MatchString(subdomain); m {
+	//			return false
+	//		}
+	//	}
+	//}
+	//if r.options.matchRegexes != nil {
+	//	for _, match := range r.options.matchRegexes {
+	//		if m := match.MatchString(subdomain); m {
+	//			return true
+	//		}
+	//	}
+	//	return false
+	//}
 	return true
 }
