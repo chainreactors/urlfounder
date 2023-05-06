@@ -1,20 +1,27 @@
-package webarchive
+package alienvault
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
-	"net/http"
 	"time"
+
+	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
 )
+
+type alienvaultResponse struct {
+	Detail  string `json:"detail"`
+	Error   string `json:"error"`
+	UrlList []struct {
+		Url string `json:"url"`
+	} `json:"url_list"`
+}
 
 // Source is the passive scraping agent
 type Source struct {
 	timeTaken time.Duration
 	errors    int
 	results   int
-	skipped   bool
 }
 
 // Run function returns all subdomains found with the service
@@ -29,26 +36,19 @@ func (s *Source) Run(ctx context.Context, domain string, session *subscraping.Se
 			close(results)
 		}(time.Now())
 
-		headers := map[string]string{
-			"Accept":       "application/json",
-			"Content-Type": "application/json",
-		}
-
-		api := fmt.Sprintf("https://web.archive.org/web/timemap/json?url=%s&matchType=prefix&collapse=urlkey&output=json&fl=original%%2Cmimetype%%2Ctimestamp%%2Cendtimestamp%%2Cgroupcount%%2Cuniqcount&limit=1000", domain)
-		resp, err := session.Get(ctx, api, "", headers)
-		isForbidden := resp != nil && resp.StatusCode == http.StatusForbidden
-		if err != nil {
-			//println(err.Error())
-			if !isForbidden {
-				results <- subscraping.Result{Source: s.Name(), Type: subscraping.Error, Error: err}
-				s.errors++
-				session.DiscardHTTPResponse(resp)
-			}
+		api := fmt.Sprintf("https://otx.alienvault.com/otxapi/indicators/domain/url_list/%s?limit=1000&page=1", domain)
+		//resp, err := session.Get(ctx, api, "", headers)
+		resp, err := session.SimpleGet(ctx, api)
+		if err != nil && resp == nil {
+			results <- subscraping.Result{Source: s.Name(), Type: subscraping.Error, Error: err}
+			s.errors++
+			session.DiscardHTTPResponse(resp)
 			return
 		}
 
-		var res [][]string
-		err = json.NewDecoder(resp.Body).Decode(&res)
+		var response alienvaultResponse
+		// Get the response body and decode
+		err = json.NewDecoder(resp.Body).Decode(&response)
 		if err != nil {
 			results <- subscraping.Result{Source: s.Name(), Type: subscraping.Error, Error: err}
 			s.errors++
@@ -57,11 +57,17 @@ func (s *Source) Run(ctx context.Context, domain string, session *subscraping.Se
 		}
 		resp.Body.Close()
 
-		for _, r := range res[1:] {
-			results <- subscraping.Result{Source: s.Name(), Type: subscraping.Subdomain, Value: r[0]}
-			s.results++
+		if response.Error != "" {
+			results <- subscraping.Result{
+				Source: s.Name(), Type: subscraping.Error, Error: fmt.Errorf("%s, %s", response.Detail, response.Error),
+			}
+			return
 		}
 
+		for _, record := range response.UrlList {
+			results <- subscraping.Result{Source: s.Name(), Type: subscraping.Subdomain, Value: record.Url}
+			s.results++
+		}
 	}()
 
 	return results
@@ -69,7 +75,7 @@ func (s *Source) Run(ctx context.Context, domain string, session *subscraping.Se
 
 // Name returns the name of the source
 func (s *Source) Name() string {
-	return "webarchive"
+	return "alienvault"
 }
 
 func (s *Source) IsDefault() bool {
@@ -93,6 +99,5 @@ func (s *Source) Statistics() subscraping.Statistics {
 		Errors:    s.errors,
 		Results:   s.results,
 		TimeTaken: s.timeTaken,
-		Skipped:   s.skipped,
 	}
 }

@@ -3,11 +3,10 @@ module github.com/projectdiscovery/subfinder/v2
 go 1.18
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/corpix/uarand v0.2.0
 	github.com/hako/durafmt v0.0.0-20210316092057-3a2c319c1acd
 	github.com/json-iterator/go v1.1.12
-	github.com/lib/pq v1.10.7
-	github.com/projectdiscovery/chaos-client v0.5.0
 	github.com/projectdiscovery/dnsx v1.1.3
 	github.com/projectdiscovery/fdmax v0.0.4
 	github.com/projectdiscovery/gologger v1.1.8
@@ -26,6 +25,7 @@ require (
 	github.com/Mzack9999/go-http-digest-auth-client v0.6.1-0.20220414142836-eb8883508809 // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/alecthomas/chroma v0.10.0 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect

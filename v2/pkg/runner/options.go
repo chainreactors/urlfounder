@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"time"
 
@@ -20,7 +19,6 @@ import (
 	"github.com/projectdiscovery/subfinder/v2/pkg/resolve"
 	fileutil "github.com/projectdiscovery/utils/file"
 	logutil "github.com/projectdiscovery/utils/log"
-	updateutils "github.com/projectdiscovery/utils/update"
 )
 
 var (
@@ -34,7 +32,6 @@ type Options struct {
 	Verbose            bool                // Verbose flag indicates whether to show verbose output or not
 	NoColor            bool                // NoColor disables the colored output
 	JSON               bool                // JSON specifies whether to use json for output format or text file
-	HostIP             bool                // HostIP specifies whether to write subdomains in host:ip format
 	Silent             bool                // Silent suppresses any extra text and only writes subdomains to screen
 	ListSources        bool                // ListSources specifies whether to list all available sources
 	RemoveWildcard     bool                // RemoveWildcard specifies whether to remove potential wildcard or dead subdomains from the results.
@@ -61,12 +58,10 @@ type Options struct {
 	Proxy              string              // HTTP proxy
 	RateLimit          int                 // Maximum number of HTTP requests to send per second
 	ExcludeIps         bool
-	Match              goflags.StringSlice
-	Filter             goflags.StringSlice
-	matchRegexes       []*regexp.Regexp
-	filterRegexes      []*regexp.Regexp
 	ResultCallback     OnResultCallback // OnResult callback
 	DisableUpdateCheck bool             // DisableUpdateCheck disable update checking
+	StatusCode         bool             // StatusCode specifies whether to output status code for url
+	Title              bool             // Title specifies whether to output titles for url
 }
 
 // OnResultCallback (hostResult)
@@ -108,27 +103,18 @@ func ParseOptions() *Options {
 		flagSet.StringSliceVarP(&options.ExcludeSources, "exclude-sources", "es", []string{}, "sources to exclude from enumeration (-es alienvault,zoomeye)", goflags.NormalizedStringSliceOptions),
 	)
 
-	createGroup(flagSet, "filter", "Filter",
-		flagSet.StringSliceVarP(&options.Match, "match", "m", []string{}, "subdomain or list of subdomain to match (file or comma separated)", goflags.FileNormalizedStringSliceOptions),
-		flagSet.StringSliceVarP(&options.Filter, "filter", "f", []string{}, " subdomain or list of subdomain to filter (file or comma separated)", goflags.FileNormalizedStringSliceOptions),
-	)
-
 	createGroup(flagSet, "rate-limit", "Rate-limit",
 		flagSet.IntVarP(&options.RateLimit, "rate-limit", "rl", 0, "maximum number of http requests to send per second"),
 		flagSet.IntVar(&options.Threads, "t", 10, "number of concurrent goroutines for resolving (-active only)"),
 	)
-
-	flagSet.CreateGroup("update", "Update",
-		flagSet.CallbackVarP(GetUpdateCallback(), "update", "up", "update subfinder to latest version"),
-		flagSet.BoolVarP(&options.DisableUpdateCheck, "disable-update-check", "duc", false, "disable automatic subfinder update check"),
-	) 
 
 	createGroup(flagSet, "output", "Output",
 		flagSet.StringVarP(&options.OutputFile, "output", "o", "", "file to write output to"),
 		flagSet.BoolVarP(&options.JSON, "json", "oJ", false, "write output in JSONL(ines) format"),
 		flagSet.StringVarP(&options.OutputDirectory, "output-dir", "oD", "", "directory to write output (-dL only)"),
 		flagSet.BoolVarP(&options.CaptureSources, "collect-sources", "cs", false, "include all sources in the output (-json only)"),
-		flagSet.BoolVarP(&options.HostIP, "ip", "oI", false, "include host IP in output (-active only)"),
+		flagSet.BoolVarP(&options.StatusCode, "status", "sT", false, "include StatusCode in output"),
+		flagSet.BoolVarP(&options.Title, "title", "tI", false, "include url titles in output"),
 	)
 
 	createGroup(flagSet, "configuration", "Configuration",
@@ -185,17 +171,6 @@ func ParseOptions() *Options {
 
 	if !options.Silent {
 		showBanner()
-	}
-
-	if !options.DisableUpdateCheck {
-		latestVersion, err := updateutils.GetVersionCheckCallback("subfinder")()
-		if err != nil {
-			if options.Verbose {
-				gologger.Error().Msgf("subfinder version check failed: %v", err.Error())
-			}
-		} else {
-			gologger.Info().Msgf("Current subfinder version %v %v", version, updateutils.GetVersionDescription(version, latestVersion))
-		}
 	}
 
 	// Check if the application loading with any provider configuration, then take it

@@ -2,6 +2,10 @@ package resolve
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+	"regexp"
+	"strconv"
 	"sync"
 
 	"github.com/rs/xid"
@@ -31,11 +35,13 @@ type HostEntry struct {
 
 // Result contains the result for a host resolution
 type Result struct {
-	Type   ResultType
-	Host   string
-	IP     string
-	Error  error
-	Source string
+	Type       ResultType
+	Host       string
+	IP         string
+	Error      error
+	Source     string
+	StatusCode string
+	UrlTitle   string
 }
 
 // ResultType is the type of result found
@@ -88,34 +94,58 @@ func (r *ResolutionPool) InitWildcards(domain string) error {
 	return nil
 }
 
+func GetStatus(domain string) (int, error) {
+	resp, err := http.Get(fmt.Sprintf("%s", domain))
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
+
+	return resp.StatusCode, nil
+}
+
+var TitleRegexp = regexp.MustCompile("(?Uis)<title>(.*)</title>")
+
+func GetTitle(domain string) (string, error) {
+	resp, err := http.Get(fmt.Sprintf("%s", domain))
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	titleMatches := TitleRegexp.FindStringSubmatch(string(body))
+	if len(titleMatches) > 1 {
+		return titleMatches[1], nil
+	}
+
+	return "", nil
+}
+
 func (r *ResolutionPool) resolveWorker() {
 	for task := range r.Tasks {
-		if !r.removeWildcard {
-			r.Results <- Result{Type: Subdomain, Host: task.Host, IP: "", Source: task.Source}
-			continue
-		}
-
-		hosts, err := r.DNSClient.Lookup(task.Host)
+		//Get urls title
+		title, err := GetTitle(task.Host)
 		if err != nil {
 			r.Results <- Result{Type: Error, Host: task.Host, Source: task.Source, Error: err}
 			continue
 		}
-
-		if len(hosts) == 0 {
+		//Get Url status code
+		status, err := GetStatus(task.Host)
+		if err != nil {
+			r.Results <- Result{Type: Error, Host: task.Host, Source: task.Source, Error: err}
 			continue
 		}
-
-		var skip bool
-		for _, host := range hosts {
-			// Ignore the host if it exists in wildcard ips map
-			if _, ok := r.wildcardIPs[host]; ok {
-				skip = true
-				break
-			}
-		}
-
-		if !skip {
-			r.Results <- Result{Type: Subdomain, Host: task.Host, IP: hosts[0], Source: task.Source}
+		r.Results <- Result{
+			Type:       Subdomain,
+			Host:       task.Host,
+			UrlTitle:   title,
+			StatusCode: strconv.Itoa(status),
+			Source:     task.Source,
 		}
 	}
 	r.wg.Done()

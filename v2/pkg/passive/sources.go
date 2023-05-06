@@ -2,6 +2,8 @@ package passive
 
 import (
 	"fmt"
+	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping/sources/alienvault"
+	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping/sources/bevigil"
 	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping/sources/webarchive"
 	"strings"
 
@@ -13,6 +15,9 @@ import (
 
 var AllSources = [...]subscraping.Source{
 	&webarchive.Source{},
+	&alienvault.Source{},
+	&bevigil.Source{},
+	//&github.Source{}, //没效果，暂定
 	// &threatminer.Source{}, // failing  api
 	// &reconcloud.Source{}, // failing due to cloudflare bot protection
 }
