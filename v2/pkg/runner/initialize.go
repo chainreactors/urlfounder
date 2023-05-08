@@ -4,9 +4,9 @@ import (
 	"net"
 	"strings"
 
+	"github.com/chainreactors/urlfounder/v2/pkg/passive"
+	"github.com/chainreactors/urlfounder/v2/pkg/resolve"
 	"github.com/projectdiscovery/dnsx/libs/dnsx"
-	"github.com/projectdiscovery/subfinder/v2/pkg/passive"
-	"github.com/projectdiscovery/subfinder/v2/pkg/resolve"
 )
 
 // initializePassiveEngine creates the passive engine and loads sources etc
@@ -17,15 +17,6 @@ func (r *Runner) initializePassiveEngine() {
 // initializeResolver creates the resolver used to resolve the found subdomains
 func (r *Runner) initializeResolver() error {
 	var resolvers []string
-
-	// If the file has been provided, read resolvers from the file
-	if r.options.ResolverList != "" {
-		var err error
-		resolvers, err = loadFromFile(r.options.ResolverList)
-		if err != nil {
-			return err
-		}
-	}
 
 	if len(r.options.Resolvers) > 0 {
 		resolvers = append(resolvers, r.options.Resolvers...)

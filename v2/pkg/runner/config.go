@@ -6,11 +6,11 @@ import (
 
 	"gopkg.in/yaml.v3"
 
+	"github.com/chainreactors/urlfounder/v2/pkg/passive"
 	"github.com/projectdiscovery/gologger"
-	"github.com/projectdiscovery/subfinder/v2/pkg/passive"
 )
 
-// GetConfigDirectory gets the subfinder config directory for a user
+// GetConfigDirectory gets the urlfounder config directory for a user
 func GetConfigDirectory() (string, error) {
 	var config string
 
@@ -18,9 +18,9 @@ func GetConfigDirectory() (string, error) {
 	if err != nil {
 		return config, err
 	}
-	config = directory + "/.config/subfinder"
+	config = directory + "/.config/urlfounder"
 
-	// Create All directory for subfinder even if they exist
+	// Create All directory for urlfounder even if they exist
 	err = os.MkdirAll(config, os.ModePerm)
 	if err != nil {
 		return config, err

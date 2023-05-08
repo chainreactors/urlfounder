@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping"
 )
 
 type alienvaultResponse struct {
@@ -79,7 +79,7 @@ func (s *Source) Name() string {
 }
 
 func (s *Source) IsDefault() bool {
-	return false
+	return true
 }
 
 func (s *Source) HasRecursiveSupport() bool {

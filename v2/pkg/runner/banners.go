@@ -22,11 +22,3 @@ const version = `v0.0.1`
 func showBanner() {
 	gologger.Print().Msgf("%s\n", banner)
 }
-
-// GetUpdateCallback returns a callback function that updates subfinder
-//func GetUpdateCallback() func() {
-//	return func() {
-//		showBanner()
-//		updateutils.GetUpdateToolCallback("subfinder", version)()
-//	}
-//}

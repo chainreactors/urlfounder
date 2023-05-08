@@ -15,7 +15,7 @@ func TestConfigGetDirectory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Expected nil got %v while getting dir\n", err)
 	}
-	config := home + "/.config/subfinder"
+	config := home + "/.config/urlfounder"
 
 	require.Equal(t, directory, config, "Directory and config should be equal")
 }

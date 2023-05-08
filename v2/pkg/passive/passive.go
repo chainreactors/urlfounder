@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping"
 )
 
 // EnumerateSubdomains wraps EnumerateSubdomainsWithCtx with an empty context

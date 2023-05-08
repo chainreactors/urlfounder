@@ -2,21 +2,22 @@ package passive
 
 import (
 	"fmt"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping/sources/alienvault"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping/sources/bevigil"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping/sources/webarchive"
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping/sources/alienvault"
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping/sources/bevigil"
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping/sources/webarchive"
 	"strings"
 
 	"golang.org/x/exp/maps"
 
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping"
 	"github.com/projectdiscovery/gologger"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
 )
 
 var AllSources = [...]subscraping.Source{
 	&webarchive.Source{},
 	&alienvault.Source{},
 	&bevigil.Source{},
+	//&baidu.Source{},
 	//&github.Source{}, //没效果，暂定
 	// &threatminer.Source{}, // failing  api
 	// &reconcloud.Source{}, // failing due to cloudflare bot protection

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping"
 	"strings"
 	"time"
 )

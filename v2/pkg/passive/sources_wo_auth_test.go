@@ -9,9 +9,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/gologger/levels"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
 )
 
 func TestSourcesWithoutKeys(t *testing.T) {

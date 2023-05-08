@@ -10,7 +10,7 @@ import (
 
 	jsoniter "github.com/json-iterator/go"
 
-	"github.com/projectdiscovery/subfinder/v2/pkg/resolve"
+	"github.com/chainreactors/urlfounder/v2/pkg/resolve"
 )
 
 // OutputWriter outputs content to writers.
