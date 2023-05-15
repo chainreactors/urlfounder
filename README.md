@@ -1,4 +1,6 @@
 
+fork from https://github.com/projectdiscovery/subfinder
+
 <h4 align="center">Fast passive subdomain enumeration tool.</h4>
 
 <p align="center">
@@ -192,4 +194,4 @@ func main() {
 
 # THANKS
 
-- [subfinder](https://github.com/projectdiscovery/subfinder)
+- [urlfounder](https://github.com/chainreactors/urlfounder)

@@ -10,8 +10,8 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**Subfinder version**
-Include the version of subfinder you are using, `subfinder -version`
+**urlfounder version**
+Include the version of urlfounder you are using, `urlfounder -version`
 
 **Complete command you used to reproduce this**
 

@@ -1,6 +1,6 @@
 ## Disclaimer
 
-Subfinder leverages multiple open APIs, it is developed for individuals to help them for research or internal work. If you wish to incorporate this tool into a commercial offering or purposes, you must agree to the Terms of the leveraged services:
+urlfounder leverages multiple open APIs, it is developed for individuals to help them for research or internal work. If you wish to incorporate this tool into a commercial offering or purposes, you must agree to the Terms of the leveraged services:
 
 - Bufferover:  https://tls.bufferover.run
 - CommonCrawl: https://commoncrawl.org/terms-of-use/full
@@ -11,7 +11,7 @@ Subfinder leverages multiple open APIs, it is developed for individuals to help 
 
 ---
 
-You expressly understand and agree that Subfinder (creators and contributors) shall not be liable for any damages or losses resulting from your use of this tool or third-party products that use it.
+You expressly understand and agree that urlfounder (creators and contributors) shall not be liable for any damages or losses resulting from your use of this tool or third-party products that use it.
 
 Creators aren't in charge of any and have/has no responsibility for any kind of:
 
