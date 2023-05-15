@@ -1,10 +1,10 @@
 #!/bin/bash
 
 echo "::task~> Clean up & Build binaries files"
-rm integration-test subfinder 2>/dev/null
-cd ../subfinder
+rm integration-test urlfounder 2>/dev/null
+cd ../urlfounder
 go build
-mv subfinder ../integration-test/subfinder
+mv urlfounder ../integration-test/urlfounder
 cd ../integration-test
 go build
 echo "::done::"

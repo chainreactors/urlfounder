@@ -13,8 +13,8 @@ import (
 
 	"github.com/projectdiscovery/gologger"
 
-	"github.com/projectdiscovery/subfinder/v2/pkg/passive"
-	"github.com/projectdiscovery/subfinder/v2/pkg/resolve"
+	"github.com/chainreactors/urlfounder/v2/pkg/passive"
+	"github.com/chainreactors/urlfounder/v2/pkg/resolve"
 )
 
 // Runner is an instance of the subdomain enumeration
@@ -88,7 +88,7 @@ func (r *Runner) EnumerateMultipleDomainsWithCtx(ctx context.Context, reader io.
 	for scanner.Scan() {
 		domain, err := sanitize(scanner.Text())
 		isIp := ip.MatchString(domain)
-		if errors.Is(err, ErrEmptyInput) || (r.options.ExcludeIps && isIp) {
+		if errors.Is(err, ErrEmptyInput) || (isIp) {
 			continue
 		}
 

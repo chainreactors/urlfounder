@@ -22,7 +22,7 @@ builds:
       goarch: 'arm'
 
   binary: '{{ .ProjectName }}'
-  main: cmd/subfinder/main.go
+  main: cmd/urlfounder/main.go
 
 archives:
 - format: zip

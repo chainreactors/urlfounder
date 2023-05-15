@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping"
 	"net/http"
 	"time"
 )

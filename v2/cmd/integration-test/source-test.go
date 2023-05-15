@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/projectdiscovery/subfinder/v2/pkg/testutils"
+	"github.com/chainreactors/urlfounder/v2/pkg/testutils"
 )
 
 type dnsrepoTestcases struct{}
@@ -25,7 +25,7 @@ func (h dnsrepoTestcases) Execute() error {
 	if err != nil {
 		return err
 	}
-	results, err := testutils.RunSubfinderAndGetResults(debug, "hackerone.com", "-s", "dnsrepo", "-provider-config", file.Name())
+	results, err := testutils.RunUrlfounderAndGetResults(debug, "hackerone.com", "-s", "dnsrepo", "-provider-config", file.Name())
 	if err != nil {
 		return err
 	}

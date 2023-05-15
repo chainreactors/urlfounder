@@ -8,7 +8,7 @@ import (
 
 	jsoniter "github.com/json-iterator/go"
 
-	"github.com/projectdiscovery/subfinder/v2/pkg/subscraping"
+	"github.com/chainreactors/urlfounder/v2/pkg/subscraping"
 )
 
 type Response struct {
@@ -84,7 +84,7 @@ func (s *Source) Name() string {
 }
 
 func (s *Source) IsDefault() bool {
-	return true
+	return false
 }
 
 func (s *Source) HasRecursiveSupport() bool {

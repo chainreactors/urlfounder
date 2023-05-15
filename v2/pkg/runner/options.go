@@ -13,17 +13,17 @@ import (
 
 	"gopkg.in/yaml.v3"
 
+	"github.com/chainreactors/urlfounder/v2/pkg/passive"
+	"github.com/chainreactors/urlfounder/v2/pkg/resolve"
 	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/gologger"
-	"github.com/projectdiscovery/subfinder/v2/pkg/passive"
-	"github.com/projectdiscovery/subfinder/v2/pkg/resolve"
 	fileutil "github.com/projectdiscovery/utils/file"
 	logutil "github.com/projectdiscovery/utils/log"
 )
 
 var (
-	defaultConfigLocation         = filepath.Join(userHomeDir(), ".config/subfinder/config.yaml")
-	defaultProviderConfigLocation = filepath.Join(userHomeDir(), ".config/subfinder/provider-config.yaml")
+	defaultConfigLocation         = filepath.Join(userHomeDir(), ".config/urlfounder/config.yaml")
+	defaultProviderConfigLocation = filepath.Join(userHomeDir(), ".config/urlfounder/provider-config.yaml")
 )
 
 // Options contains the configuration options for tuning
@@ -52,16 +52,14 @@ type Options struct {
 	Sources            goflags.StringSlice `yaml:"sources,omitempty"`         // Sources contains a comma-separated list of sources to use for enumeration
 	ExcludeSources     goflags.StringSlice `yaml:"exclude-sources,omitempty"` // ExcludeSources contains the comma-separated sources to not include in the enumeration process
 	Resolvers          goflags.StringSlice `yaml:"resolvers,omitempty"`       // Resolvers is the comma-separated resolvers to use for enumeration
-	ResolverList       string              // ResolverList is a text file containing list of resolvers to use for enumeration
 	Config             string              // Config contains the location of the config file
 	ProviderConfig     string              // ProviderConfig contains the location of the provider config file
 	Proxy              string              // HTTP proxy
 	RateLimit          int                 // Maximum number of HTTP requests to send per second
-	ExcludeIps         bool
-	ResultCallback     OnResultCallback // OnResult callback
-	DisableUpdateCheck bool             // DisableUpdateCheck disable update checking
-	StatusCode         bool             // StatusCode specifies whether to output status code for url
-	Title              bool             // Title specifies whether to output titles for url
+	ResultCallback     OnResultCallback    // OnResult callback
+	DisableUpdateCheck bool                // DisableUpdateCheck disable update checking
+	StatusCode         bool                // StatusCode specifies whether to output status code for url
+	Title              bool                // Title specifies whether to output titles for url
 }
 
 // OnResultCallback (hostResult)
@@ -89,15 +87,15 @@ func ParseOptions() *Options {
 
 	var err error
 	flagSet := goflags.NewFlagSet()
-	flagSet.SetDescription(`Subfinder is a subdomain discovery tool that discovers subdomains for websites by using passive online sources.`)
+	flagSet.SetDescription(`Urlfounder is a url discovery tool that discovers urls for websites by using passive online sources.`)
 
 	createGroup(flagSet, "input", "Input",
-		flagSet.StringSliceVarP(&options.Domain, "domain", "d", []string{}, "domains to find subdomains for", goflags.NormalizedStringSliceOptions),
-		flagSet.StringVarP(&options.DomainsFile, "list", "dL", "", "file containing list of domains for subdomain discovery"),
+		flagSet.StringSliceVarP(&options.Domain, "domain", "d", []string{}, "domains to find urls for", goflags.NormalizedStringSliceOptions),
+		flagSet.StringVarP(&options.DomainsFile, "list", "dL", "", "file containing list of domains for url discovery"),
 	)
 
 	createGroup(flagSet, "source", "Source",
-		flagSet.StringSliceVarP(&options.Sources, "sources", "s", []string{}, "specific sources to use for discovery (-s crtsh,github). Use -ls to display all available sources.", goflags.NormalizedStringSliceOptions),
+		flagSet.StringSliceVarP(&options.Sources, "sources", "s", []string{}, "specific sources to use for discovery. Use -ls to display all available sources.", goflags.NormalizedStringSliceOptions),
 		flagSet.BoolVar(&options.OnlyRecursive, "recursive", false, "use only sources that can handle subdomains recursively (e.g. subdomain.domain.tld vs domain.tld)"),
 		flagSet.BoolVar(&options.All, "all", false, "use all sources for enumeration (slow)"),
 		flagSet.StringSliceVarP(&options.ExcludeSources, "exclude-sources", "es", []string{}, "sources to exclude from enumeration (-es alienvault,zoomeye)", goflags.NormalizedStringSliceOptions),
@@ -121,15 +119,13 @@ func ParseOptions() *Options {
 		flagSet.StringVar(&options.Config, "config", defaultConfigLocation, "flag config file"),
 		flagSet.StringVarP(&options.ProviderConfig, "provider-config", "pc", defaultProviderConfigLocation, "provider config file"),
 		flagSet.StringSliceVar(&options.Resolvers, "r", []string{}, "comma separated list of resolvers to use", goflags.NormalizedStringSliceOptions),
-		flagSet.StringVarP(&options.ResolverList, "rlist", "rL", "", "file containing list of resolvers to use"),
-		flagSet.BoolVarP(&options.RemoveWildcard, "active", "nW", false, "display active subdomains only"),
-		flagSet.StringVar(&options.Proxy, "proxy", "", "http proxy to use with subfinder"),
-		flagSet.BoolVarP(&options.ExcludeIps, "exclude-ip", "ei", false, "exclude IPs from the list of domains"),
+		flagSet.BoolVarP(&options.RemoveWildcard, "active", "aC", false, "display active urls only"),
+		flagSet.StringVar(&options.Proxy, "proxy", "", "http proxy to use with urlfounder"),
 	)
 
 	createGroup(flagSet, "debug", "Debug",
 		flagSet.BoolVar(&options.Silent, "silent", false, "show only subdomains in output"),
-		flagSet.BoolVar(&options.Version, "version", false, "show version of subfinder"),
+		flagSet.BoolVar(&options.Version, "version", false, "show version of urlfounder"),
 		flagSet.BoolVar(&options.Verbose, "v", false, "show verbose output"),
 		flagSet.BoolVarP(&options.NoColor, "no-color", "nc", false, "disable color in output"),
 		flagSet.BoolVarP(&options.ListSources, "list-sources", "ls", false, "list all available sources"),

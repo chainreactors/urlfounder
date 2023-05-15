@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-func RunSubfinderAndGetResults(debug bool, domain string, extra ...string) ([]string, error) {
+func RunUrlfounderAndGetResults(debug bool, domain string, extra ...string) ([]string, error) {
 	cmd := exec.Command("bash", "-c")
-	cmdLine := fmt.Sprintf("echo %s | %s", domain, "./subfinder ")
+	cmdLine := fmt.Sprintf("echo %s | %s", domain, "./urlfounder ")
 	cmdLine += strings.Join(extra, " ")
 	cmd.Args = append(cmd.Args, cmdLine)
 	if debug {

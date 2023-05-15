@@ -7,7 +7,7 @@ import (
 
 	"github.com/logrusorgru/aurora"
 
-	"github.com/projectdiscovery/subfinder/v2/pkg/testutils"
+	"github.com/chainreactors/urlfounder/v2/pkg/testutils"
 )
 
 var (
