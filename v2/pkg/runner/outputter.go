@@ -74,7 +74,7 @@ func (o *OutputWriter) createFile(filename string, appendToFile bool) (*os.File,
 	return file, nil
 }
 
-// WriteHostNoWildcard writes the output list of subdomain with nW flag to an io.Writer
+// WriteHostNoWildcard writes the output list of url with nW flag to an io.Writer
 func (o *OutputWriter) WriteHostNoWildcard(input string, results map[string]resolve.Result, writer io.Writer) error {
 	hosts := make(map[string]resolve.HostEntry)
 	for host, result := range results {
@@ -84,7 +84,7 @@ func (o *OutputWriter) WriteHostNoWildcard(input string, results map[string]reso
 	return o.WriteHost(input, hosts, writer)
 }
 
-// WriteHost writes the output list of subdomain to an io.Writer
+// WriteHost writes the output list of url to an io.Writer
 func (o *OutputWriter) WriteHost(input string, results map[string]resolve.HostEntry, writer io.Writer) error {
 	var err error
 	if o.JSON {
@@ -129,7 +129,7 @@ func writeJSONHost(input string, results map[string]resolve.HostEntry, writer io
 	return nil
 }
 
-// WriteSourceHost writes the output list of subdomain to an io.Writer
+// WriteSourceHost writes the output list of url to an io.Writer
 func (o *OutputWriter) WriteSourceHost(input string, sourceMap map[string]map[string]struct{}, writer io.Writer) error {
 	var err error
 	if o.JSON {

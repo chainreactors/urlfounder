@@ -10,13 +10,13 @@ import (
 	"github.com/chainreactors/urlfounder/v2/pkg/subscraping"
 )
 
-// EnumerateSubdomains wraps EnumerateSubdomainsWithCtx with an empty context
-func (a *Agent) EnumerateSubdomains(domain string, proxy string, rateLimit, timeout int, maxEnumTime time.Duration) chan subscraping.Result {
-	return a.EnumerateSubdomainsWithCtx(context.Background(), domain, proxy, rateLimit, timeout, maxEnumTime)
+// EnumerateURLs wraps EnumerateURLsWithCtx with an empty context
+func (a *Agent) EnumerateURLs(domain string, proxy string, rateLimit, timeout int, maxEnumTime time.Duration) chan subscraping.Result {
+	return a.EnumerateURLsWithCtx(context.Background(), domain, proxy, rateLimit, timeout, maxEnumTime)
 }
 
-// EnumerateSubdomainsWithCtx enumerates all the subdomains for a given domain
-func (a *Agent) EnumerateSubdomainsWithCtx(ctx context.Context, domain string, proxy string, rateLimit, timeout int, maxEnumTime time.Duration) chan subscraping.Result {
+// EnumerateURLsWithCtx enumerates all the urls for a given domain
+func (a *Agent) EnumerateURLsWithCtx(ctx context.Context, domain string, proxy string, rateLimit, timeout int, maxEnumTime time.Duration) chan subscraping.Result {
 	results := make(chan subscraping.Result)
 	go func() {
 		defer close(results)

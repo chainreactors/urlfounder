@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestFilterAndMatchSubdomain(t *testing.T) {
+func TestFilterAndMatchURL(t *testing.T) {
 	options := &Options{}
 	options.Domain = []string{"example.com"}
 	options.Threads = 10
@@ -23,7 +23,7 @@ func TestFilterAndMatchSubdomain(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Expected nil got %v while creating runner\n", err)
 		}
-		match := runner.filterAndMatchSubdomain("req.example.com")
+		match := runner.filterAndMatchURL("req.example.com")
 		require.True(t, match, "Expecting a boolean True value ")
 	})
 	t.Run("Multiple Wildcards Match", func(t *testing.T) {
@@ -36,9 +36,9 @@ func TestFilterAndMatchSubdomain(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Expected nil got %v while creating runner\n", err)
 		}
-		subdomain := []string{"a.ns.example.com", "b.ns.hackerone.com"}
-		for _, sub := range subdomain {
-			match := runner.filterAndMatchSubdomain(sub)
+		url := []string{"a.ns.example.com", "b.ns.hackerone.com"}
+		for _, sub := range url {
+			match := runner.filterAndMatchURL(sub)
 			require.True(t, match, "Expecting a boolean True value ")
 		}
 	})
@@ -52,9 +52,9 @@ func TestFilterAndMatchSubdomain(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Expected nil got %v while creating runner\n", err)
 		}
-		subdomain := []string{"a.ns.example.com", "b.hackerone.com"}
-		for _, sub := range subdomain {
-			match := runner.filterAndMatchSubdomain(sub)
+		url := []string{"a.ns.example.com", "b.hackerone.com"}
+		for _, sub := range url {
+			match := runner.filterAndMatchURL(sub)
 			require.True(t, match, "Expecting a boolean True value ")
 		}
 	})
@@ -68,7 +68,7 @@ func TestFilterAndMatchSubdomain(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Expected nil got %v while creating runner\n", err)
 		}
-		match := runner.filterAndMatchSubdomain("req.example.com")
+		match := runner.filterAndMatchURL("req.example.com")
 		require.False(t, match, "Expecting a boolean False value ")
 	})
 	t.Run("Multiple Wildcards Filter", func(t *testing.T) {
@@ -81,9 +81,9 @@ func TestFilterAndMatchSubdomain(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Expected nil got %v while creating runner\n", err)
 		}
-		subdomain := []string{"a.ns.example.com", "b.ns.hackerone.com"}
-		for _, sub := range subdomain {
-			match := runner.filterAndMatchSubdomain(sub)
+		url := []string{"a.ns.example.com", "b.ns.hackerone.com"}
+		for _, sub := range url {
+			match := runner.filterAndMatchURL(sub)
 			require.False(t, match, "Expecting a boolean False value ")
 		}
 	})
@@ -97,9 +97,9 @@ func TestFilterAndMatchSubdomain(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Expected nil got %v while creating runner\n", err)
 		}
-		subdomain := []string{"a.ns.example.com", "b.hackerone.com"}
-		for _, sub := range subdomain {
-			match := runner.filterAndMatchSubdomain(sub)
+		url := []string{"a.ns.example.com", "b.hackerone.com"}
+		for _, sub := range url {
+			match := runner.filterAndMatchURL(sub)
 			require.False(t, match, "Expecting a boolean False value ")
 		}
 	})
@@ -114,9 +114,9 @@ func TestFilterAndMatchSubdomain(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Expected nil got %v while creating runner\n", err)
 		}
-		subdomain := []string{"example.com", "example.com"}
-		for _, sub := range subdomain {
-			match := runner.filterAndMatchSubdomain(sub)
+		url := []string{"example.com", "example.com"}
+		for _, sub := range url {
+			match := runner.filterAndMatchURL(sub)
 			require.False(t, match, "Expecting a boolean False value ")
 		}
 	})
@@ -132,9 +132,9 @@ func TestFilterAndMatchSubdomain(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Expected nil got %v while creating runner\n", err)
 		}
-		subdomain := map[string]string{"filter": "example.com", "match": "www.example.com"}
-		for key, sub := range subdomain {
-			result := runner.filterAndMatchSubdomain(sub)
+		url := map[string]string{"filter": "example.com", "match": "www.example.com"}
+		for key, sub := range url {
+			result := runner.filterAndMatchURL(sub)
 			if key == "filter" {
 				require.False(t, result, "Expecting a boolean False value ")
 			} else {

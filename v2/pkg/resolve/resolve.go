@@ -15,7 +15,7 @@ const (
 	maxWildcardChecks = 3
 )
 
-// ResolutionPool is a pool of resolvers created for resolving subdomains
+// ResolutionPool is a pool of resolvers created for resolving urls
 // for a given host.
 type ResolutionPool struct {
 	*Resolver
@@ -49,11 +49,11 @@ type ResultType int
 
 // Types of data result can return
 const (
-	Subdomain ResultType = iota
+	URL ResultType = iota
 	Error
 )
 
-// NewResolutionPool creates a pool of resolvers for resolving subdomains of a given domain
+// NewResolutionPool creates a pool of resolvers for resolving urls of a given domain
 func (r *Resolver) NewResolutionPool(workers int, removeWildcard bool) *ResolutionPool {
 	resolutionPool := &ResolutionPool{
 		Resolver:       r,
@@ -141,7 +141,7 @@ func (r *ResolutionPool) resolveWorker() {
 			continue
 		}
 		r.Results <- Result{
-			Type:       Subdomain,
+			Type:       URL,
 			Host:       task.Host,
 			UrlTitle:   title,
 			StatusCode: strconv.Itoa(status),

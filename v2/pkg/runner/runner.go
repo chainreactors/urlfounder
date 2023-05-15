@@ -17,7 +17,7 @@ import (
 	"github.com/chainreactors/urlfounder/v2/pkg/resolve"
 )
 
-// Runner is an instance of the subdomain enumeration
+// Runner is an instance of the url enumeration
 // client used to orchestrate the whole process.
 type Runner struct {
 	options        *Options
@@ -31,10 +31,10 @@ type Runner struct {
 func NewRunner(options *Options) (*Runner, error) {
 	runner := &Runner{options: options}
 
-	// Initialize the passive subdomain enumeration engine
+	// Initialize the passive url enumeration engine
 	runner.initializePassiveEngine()
 
-	// Initialize the subdomain resolver
+	// Initialize the url resolver
 	err := runner.initializeResolver()
 	if err != nil {
 		return nil, err
@@ -48,13 +48,13 @@ func (r *Runner) RunEnumeration() error {
 	return r.RunEnumerationWithCtx(context.Background())
 }
 
-// RunEnumerationWithCtx runs the subdomain enumeration flow on the targets specified
+// RunEnumerationWithCtx runs the url enumeration flow on the targets specified
 func (r *Runner) RunEnumerationWithCtx(ctx context.Context) error {
 	outputs := []io.Writer{r.options.Output}
 
 	if len(r.options.Domain) > 0 {
 		domainsReader := strings.NewReader(strings.Join(r.options.Domain, "\n"))
-		return r.EnumerateMultipleDomainsWithCtx(ctx, domainsReader, outputs)
+		return r.EnumerateMultipleURLsWithCtx(ctx, domainsReader, outputs)
 	}
 
 	// If we have multiple domains as input,
@@ -63,26 +63,26 @@ func (r *Runner) RunEnumerationWithCtx(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-		err = r.EnumerateMultipleDomainsWithCtx(ctx, f, outputs)
+		err = r.EnumerateMultipleURLsWithCtx(ctx, f, outputs)
 		f.Close()
 		return err
 	}
 
 	// If we have STDIN input, treat it as multiple domains
 	if r.options.Stdin {
-		return r.EnumerateMultipleDomainsWithCtx(ctx, os.Stdin, outputs)
+		return r.EnumerateMultipleURLsWithCtx(ctx, os.Stdin, outputs)
 	}
 	return nil
 }
 
-// EnumerateMultipleDomains wraps EnumerateMultipleDomainsWithCtx with an empty context
-func (r *Runner) EnumerateMultipleDomains(reader io.Reader, writers []io.Writer) error {
-	return r.EnumerateMultipleDomainsWithCtx(context.Background(), reader, writers)
+// EnumerateMultipleURLs wraps EnumerateMultipleURLsWithCtx with an empty context
+func (r *Runner) EnumerateMultipleURLs(reader io.Reader, writers []io.Writer) error {
+	return r.EnumerateMultipleURLsWithCtx(context.Background(), reader, writers)
 }
 
-// EnumerateMultipleDomainsWithCtx enumerates subdomains for multiple domains
-// We keep enumerating subdomains for a given domain until we reach an error
-func (r *Runner) EnumerateMultipleDomainsWithCtx(ctx context.Context, reader io.Reader, writers []io.Writer) error {
+// EnumerateMultipleURLsWithCtx enumerates urls for multiple domains
+// We keep enumerating urls for a given domain until we reach an error
+func (r *Runner) EnumerateMultipleURLsWithCtx(ctx context.Context, reader io.Reader, writers []io.Writer) error {
 	scanner := bufio.NewScanner(reader)
 	ip, _ := regexp.Compile(`^([0-9\.]+$)`)
 	for scanner.Scan() {
@@ -104,7 +104,7 @@ func (r *Runner) EnumerateMultipleDomainsWithCtx(ctx context.Context, reader io.
 				return err
 			}
 
-			err = r.EnumerateSingleDomainWithCtx(ctx, domain, append(writers, file))
+			err = r.EnumerateSingleURLWithCtx(ctx, domain, append(writers, file))
 
 			file.Close()
 		} else if r.options.OutputDirectory != "" {
@@ -122,11 +122,11 @@ func (r *Runner) EnumerateMultipleDomainsWithCtx(ctx context.Context, reader io.
 				return err
 			}
 
-			err = r.EnumerateSingleDomainWithCtx(ctx, domain, append(writers, file))
+			err = r.EnumerateSingleURLWithCtx(ctx, domain, append(writers, file))
 
 			file.Close()
 		} else {
-			err = r.EnumerateSingleDomainWithCtx(ctx, domain, writers)
+			err = r.EnumerateSingleURLWithCtx(ctx, domain, writers)
 		}
 		if err != nil {
 			return err

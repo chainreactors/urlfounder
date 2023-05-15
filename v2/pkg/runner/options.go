@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -27,27 +28,27 @@ var (
 )
 
 // Options contains the configuration options for tuning
-// the subdomain enumeration process.
+// the url enumeration process.
 type Options struct {
 	Verbose            bool                // Verbose flag indicates whether to show verbose output or not
 	NoColor            bool                // NoColor disables the colored output
 	JSON               bool                // JSON specifies whether to use json for output format or text file
-	Silent             bool                // Silent suppresses any extra text and only writes subdomains to screen
+	Silent             bool                // Silent suppresses any extra text and only writes urls to screen
 	ListSources        bool                // ListSources specifies whether to list all available sources
-	RemoveWildcard     bool                // RemoveWildcard specifies whether to remove potential wildcard or dead subdomains from the results.
+	RemoveWildcard     bool                // RemoveWildcard specifies whether to remove potential wildcard or dead urls from the results.
 	CaptureSources     bool                // CaptureSources specifies whether to save all sources that returned a specific domains or just the first source
 	Stdin              bool                // Stdin specifies whether stdin input was given to the process
 	Version            bool                // Version specifies if we should just show version and exit
-	OnlyRecursive      bool                // Recursive specifies whether to use only recursive subdomain enumeration sources
+	OnlyRecursive      bool                // Recursive specifies whether to use only recursive url enumeration sources
 	All                bool                // All specifies whether to use all (slow) sources.
 	Statistics         bool                // Statistics specifies whether to report source statistics
 	Threads            int                 // Threads controls the number of threads to use for active enumerations
 	Timeout            int                 // Timeout is the seconds to wait for sources to respond
 	MaxEnumerationTime int                 // MaxEnumerationTime is the maximum amount of time in minutes to wait for enumeration
-	Domain             goflags.StringSlice // Domain is the domain to find subdomains for
-	DomainsFile        string              // DomainsFile is the file containing list of domains to find subdomains for
+	Domain             goflags.StringSlice // Domain is the domain to find urls for
+	DomainsFile        string              // DomainsFile is the file containing list of domains to find urls for
 	Output             io.Writer
-	OutputFile         string              // Output is the file to write found subdomains to.
+	OutputFile         string              // Output is the file to write found urls to.
 	OutputDirectory    string              // OutputDirectory is the directory to write results to in case list of domains is given
 	Sources            goflags.StringSlice `yaml:"sources,omitempty"`         // Sources contains a comma-separated list of sources to use for enumeration
 	ExcludeSources     goflags.StringSlice `yaml:"exclude-sources,omitempty"` // ExcludeSources contains the comma-separated sources to not include in the enumeration process
@@ -59,7 +60,11 @@ type Options struct {
 	ResultCallback     OnResultCallback    // OnResult callback
 	DisableUpdateCheck bool                // DisableUpdateCheck disable update checking
 	StatusCode         bool                // StatusCode specifies whether to output status code for url
-	Title              bool                // Title specifies whether to output titles for url
+	Match              goflags.StringSlice
+	Filter             goflags.StringSlice
+	matchRegexes       []*regexp.Regexp
+	filterRegexes      []*regexp.Regexp
+	Title              bool // Title specifies whether to output titles for url
 }
 
 // OnResultCallback (hostResult)
@@ -96,9 +101,14 @@ func ParseOptions() *Options {
 
 	createGroup(flagSet, "source", "Source",
 		flagSet.StringSliceVarP(&options.Sources, "sources", "s", []string{}, "specific sources to use for discovery. Use -ls to display all available sources.", goflags.NormalizedStringSliceOptions),
-		flagSet.BoolVar(&options.OnlyRecursive, "recursive", false, "use only sources that can handle subdomains recursively (e.g. subdomain.domain.tld vs domain.tld)"),
+		//flagSet.BoolVar(&options.OnlyRecursive, "recursive", false, "use only sources that can handle urls recursively (e.g. url.domain.tld vs domain.tld)"),
 		flagSet.BoolVar(&options.All, "all", false, "use all sources for enumeration (slow)"),
 		flagSet.StringSliceVarP(&options.ExcludeSources, "exclude-sources", "es", []string{}, "sources to exclude from enumeration (-es alienvault,zoomeye)", goflags.NormalizedStringSliceOptions),
+	)
+
+	createGroup(flagSet, "filter", "Filter",
+		flagSet.StringSliceVarP(&options.Match, "match", "m", []string{}, "url or list of url to match (file or comma separated)", goflags.FileNormalizedStringSliceOptions),
+		flagSet.StringSliceVarP(&options.Filter, "filter", "f", []string{}, " url or list of url to filter (file or comma separated)", goflags.FileNormalizedStringSliceOptions),
 	)
 
 	createGroup(flagSet, "rate-limit", "Rate-limit",
@@ -124,7 +134,7 @@ func ParseOptions() *Options {
 	)
 
 	createGroup(flagSet, "debug", "Debug",
-		flagSet.BoolVar(&options.Silent, "silent", false, "show only subdomains in output"),
+		flagSet.BoolVar(&options.Silent, "silent", false, "show only urls in output"),
 		flagSet.BoolVar(&options.Version, "version", false, "show version of urlfounder"),
 		flagSet.BoolVar(&options.Verbose, "v", false, "show verbose output"),
 		flagSet.BoolVarP(&options.NoColor, "no-color", "nc", false, "disable color in output"),

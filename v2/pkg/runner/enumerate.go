@@ -17,13 +17,13 @@ import (
 
 const maxNumCount = 2
 
-// EnumerateSingleDomain wraps EnumerateSingleDomainWithCtx with an empty context
-func (r *Runner) EnumerateSingleDomain(domain string, writers []io.Writer) error {
-	return r.EnumerateSingleDomainWithCtx(context.Background(), domain, writers)
+// EnumerateSingleURL wraps EnumerateSingleURLWithCtx with an empty context
+func (r *Runner) EnumerateSingleURL(domain string, writers []io.Writer) error {
+	return r.EnumerateSingleURLWithCtx(context.Background(), domain, writers)
 }
 
-// EnumerateSingleDomainWithCtx performs subdomain enumeration against a single domain
-func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string, writers []io.Writer) error {
+// EnumerateSingleURLWithCtx performs url enumeration against a single domain
+func (r *Runner) EnumerateSingleURLWithCtx(ctx context.Context, domain string, writers []io.Writer) error {
 	gologger.Info().Msgf("Enumerating urls for %s\n", domain)
 
 	//Check if the user has asked to remove wildcards explicitly.
@@ -38,13 +38,13 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 		}
 	}
 
-	// Run the passive subdomain enumeration
+	// Run the passive url enumeration
 	now := time.Now()
-	passiveResults := r.passiveAgent.EnumerateSubdomainsWithCtx(ctx, domain, r.options.Proxy, r.options.RateLimit, r.options.Timeout, time.Duration(r.options.MaxEnumerationTime)*time.Minute)
+	passiveResults := r.passiveAgent.EnumerateURLsWithCtx(ctx, domain, r.options.Proxy, r.options.RateLimit, r.options.Timeout, time.Duration(r.options.MaxEnumerationTime)*time.Minute)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
-	// Create a unique map for filtering duplicate subdomains out 过滤重复子域
+	// Create a unique map for filtering duplicate urls out 过滤重复子域
 	uniqueMap := make(map[string]resolve.HostEntry)
 	// Create a map to track sources for each host 跟踪host源
 	sourceMap := make(map[string]map[string]struct{})
@@ -54,31 +54,31 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 			switch result.Type {
 			case subscraping.Error:
 				gologger.Warning().Msgf("Could not run source %s: %s\n", result.Source, result.Error)
-			case subscraping.Subdomain:
+			case subscraping.URL:
 				// 验证找到的子域并删除通配符
-				subdomain := strings.ReplaceAll(strings.ToLower(result.Value), "*.", "")
+				url := strings.ReplaceAll(strings.ToLower(result.Value), "*.", "")
 
-				if matchSubdomain := r.filterAndMatchSubdomain(subdomain); matchSubdomain {
-					if _, ok := uniqueMap[subdomain]; !ok {
-						sourceMap[subdomain] = make(map[string]struct{})
+				if matchURL := r.filterAndMatchURL(url); matchURL {
+					if _, ok := uniqueMap[url]; !ok {
+						sourceMap[url] = make(map[string]struct{})
 					}
 
-					// Log the verbose message about the found subdomain per source
-					if _, ok := sourceMap[subdomain][result.Source]; !ok {
-						gologger.Verbose().Label(result.Source).Msg(subdomain)
+					// Log the verbose message about the found url per source
+					if _, ok := sourceMap[url][result.Source]; !ok {
+						gologger.Verbose().Label(result.Source).Msg(url)
 					}
 
-					sourceMap[subdomain][result.Source] = struct{}{}
+					sourceMap[url][result.Source] = struct{}{}
 
-					// Check if the subdomain is a duplicate. If not,
-					// send the subdomain for resolution.
-					if _, ok := uniqueMap[subdomain]; ok {
+					// Check if the url is a duplicate. If not,
+					// send the url for resolution.
+					if _, ok := uniqueMap[url]; ok {
 						continue
 					}
 
-					hostEntry := resolve.HostEntry{Host: subdomain, Source: result.Source}
+					hostEntry := resolve.HostEntry{Host: url, Source: result.Source}
 
-					uniqueMap[subdomain] = hostEntry
+					uniqueMap[url] = hostEntry
 					// If the user asked to remove wildcard then send on the resolve
 					// queue. Otherwise, if mode is not verbose print the results on
 					// the screen as they are discovered.
@@ -104,8 +104,8 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 			switch result.Type {
 			case resolve.Error:
 				gologger.Warning().Msgf("Could not resolve host: %s\n", result.Error)
-			case resolve.Subdomain:
-				// Add the found subdomain to a map.
+			case resolve.URL:
+				// Add the found url to a map.
 				if _, ok := foundResults[result.Host]; !ok {
 					foundResults[result.Host] = result
 				}
@@ -139,13 +139,13 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 		}
 	}
 
-	// Show found subdomain count in any case.
+	// Show found url count in any case.
 	duration := durafmt.Parse(time.Since(now)).LimitFirstN(maxNumCount).String()
-	var numberOfSubDomains int
+	var numberOfURLs int
 	if r.options.RemoveWildcard {
-		numberOfSubDomains = len(foundResults)
+		numberOfURLs = len(foundResults)
 	} else {
-		numberOfSubDomains = len(uniqueMap)
+		numberOfURLs = len(uniqueMap)
 	}
 
 	if r.options.ResultCallback != nil {
@@ -153,7 +153,7 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 			r.options.ResultCallback(&v)
 		}
 	}
-	gologger.Info().Msgf("Found %d urls for %s in %s\n", numberOfSubDomains, domain, duration)
+	gologger.Info().Msgf("Found %d urls for %s in %s\n", numberOfURLs, domain, duration)
 
 	if r.options.Statistics {
 		gologger.Info().Msgf("Printing source statistics for %s", domain)
@@ -163,21 +163,21 @@ func (r *Runner) EnumerateSingleDomainWithCtx(ctx context.Context, domain string
 	return nil
 }
 
-func (r *Runner) filterAndMatchSubdomain(subdomain string) bool {
-	//if r.options.filterRegexes != nil {
-	//	for _, filter := range r.options.filterRegexes {
-	//		if m := filter.MatchString(subdomain); m {
-	//			return false
-	//		}
-	//	}
-	//}
-	//if r.options.matchRegexes != nil {
-	//	for _, match := range r.options.matchRegexes {
-	//		if m := match.MatchString(subdomain); m {
-	//			return true
-	//		}
-	//	}
-	//	return false
-	//}
+func (r *Runner) filterAndMatchURL(url string) bool {
+	if r.options.filterRegexes != nil {
+		for _, filter := range r.options.filterRegexes {
+			if m := filter.MatchString(url); m {
+				return false
+			}
+		}
+	}
+	if r.options.matchRegexes != nil {
+		for _, match := range r.options.matchRegexes {
+			if m := match.MatchString(url); m {
+				return true
+			}
+		}
+		return false
+	}
 	return true
 }

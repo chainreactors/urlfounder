@@ -14,7 +14,7 @@ func (r *Runner) initializePassiveEngine() {
 	r.passiveAgent = passive.New(r.options.Sources, r.options.ExcludeSources, r.options.All, r.options.OnlyRecursive)
 }
 
-// initializeResolver creates the resolver used to resolve the found subdomains
+// initializeResolver creates the resolver used to resolve the found urls
 func (r *Runner) initializeResolver() error {
 	var resolvers []string
 

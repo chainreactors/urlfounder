@@ -72,7 +72,7 @@ func (s *Source) Run(ctx context.Context, domain string, session *subscraping.Se
 		}
 
 		for _, url := range urls {
-			results <- subscraping.Result{Source: s.Name(), Type: subscraping.Subdomain, Value: url}
+			results <- subscraping.Result{Source: s.Name(), Type: subscraping.URL, Value: url}
 		}
 
 	}()

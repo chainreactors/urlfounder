@@ -56,7 +56,7 @@ func NewSession(domain string, proxy string, rateLimit, timeout int) (*Session, 
 	}
 
 	// Create a new extractor object for the current domain
-	extractor, err := NewSubdomainExtractor(domain)
+	extractor, err := NewURLExtractor(domain)
 	session.Extractor = extractor
 
 	return session, err

@@ -12,17 +12,17 @@ import (
 
 const MultipleKeyPartsLength = 2
 
-var subdomainExtractorMutex = &sync.Mutex{}
+var urlExtractorMutex = &sync.Mutex{}
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-// NewSubdomainExtractor creates a new regular expression to extract
-// subdomains from text based on the given domain.
-func NewSubdomainExtractor(domain string) (*regexp.Regexp, error) {
-	subdomainExtractorMutex.Lock()
-	defer subdomainExtractorMutex.Unlock()
+// NewURLExtractor creates a new regular expression to extract
+// urls from text based on the given domain.
+func NewURLExtractor(domain string) (*regexp.Regexp, error) {
+	urlExtractorMutex.Lock()
+	defer urlExtractorMutex.Unlock()
 	extractor, err := regexp.Compile(`[a-zA-Z0-9\*_.-]+\.` + domain)
 	if err != nil {
 		return nil, err

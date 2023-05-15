@@ -20,7 +20,7 @@ func main() {
 	})
 
 	buf := bytes.Buffer{}
-	err = runnerInstance.EnumerateSingleDomain("projectdiscovery.io", []io.Writer{&buf})
+	err = runnerInstance.EnumerateSingleURL("projectdiscovery.io", []io.Writer{&buf})
 	if err != nil {
 		log.Fatal(err)
 	}

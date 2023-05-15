@@ -3,7 +3,7 @@ fork from https://github.com/projectdiscovery/subfinder
 
 # intro
 
-<h4 align="center">Fast passive subdomain enumeration tool.</h4>
+<h4 align="center">Fast passive url enumeration tool.</h4>
 
 <p align="center">
   <a href="#features">Features</a> •
@@ -49,32 +49,39 @@ INPUT:
 
 SOURCE:
    -s, -sources string[]           specific sources to use for discovery. Use -ls to display all available sources.
-   -recursive                      use only sources that can handle subdomains recursively (e.g. subdomain.domain.tld vs domain.tld)
    -all                            use all sources for enumeration (slow)
    -es, -exclude-sources string[]  sources to exclude from enumeration (-es alienvault,zoomeye)
 
+
+
+FILTER:
+   -m, -match string[]   url or list of url to match (file or comma separated)
+   -f, -filter string[]   url or list of url to filter (file or comma separated)
+
 RATE-LIMIT:
    -rl, -rate-limit int  maximum number of http requests to send per second
-   -t int                number of concurrent goroutines for resolving (-active only) (default 10)
+   -t int                number of concurrent goroutines for resolving (-active 
+                                                                                only) (default 10)
 
 OUTPUT:
    -o, -output string       file to write output to
    -oJ, -json               write output in JSONL(ines) format
    -oD, -output-dir string  directory to write output (-dL only)
-   -cs, -collect-sources    include all sources in the output (-json only)
-   -sT, -status             include StatusCode in output
-   -tI, -title              include url titles in output
+   -cs, -collect-sources    include all sources in the output (-json only)      
+   -silent             show only urls in output
+   -version            show version of urlfounder
+   -v                  show verbose output
+   -nc, -no-color      disable color in output
+   -ls, -list-sources  list all available sources
+   -stats              report source statistics
 
-CONFIGURATION:
-   -config string                flag config file (default "/root/.config/urlfounder/config.yaml")
-   -pc, -provider-config string  provider config file (default "/root/.config/urlfounder/provider-config.yaml")
-   -r string[]                   comma separated list of resolvers to use
-   -rL, -rlist string            file containing list of resolvers to use
-   -aC, -active                  display active urls only
-   -proxy string                 http proxy to use with urlfounder
+OPTIMIZATION:
+   -timeout int   seconds to wait before timing out (default 30)
+   -max-time int  minutes to wait for enumeration results (default 10)
 
-DEBUG:
-   -silent             show only subdomains in output
+
+Process finished with the exit code 0
+   -silent             show only urls in output
    -version            show version of urlfounder
    -v                  show verbose output
    -nc, -no-color      disable color in output

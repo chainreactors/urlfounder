@@ -1,3 +1,3 @@
-// Package passive provides capability for doing passive subdomain
+// Package passive provides capability for doing passive url
 // enumeration on targets.
 package passive

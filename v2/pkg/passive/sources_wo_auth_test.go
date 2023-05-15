@@ -24,7 +24,7 @@ func TestSourcesWithoutKeys(t *testing.T) {
 	session, err := subscraping.NewSession(domain, "", 0, timeout)
 	assert.Nil(t, err)
 
-	var expected = subscraping.Result{Type: subscraping.Subdomain, Value: domain, Error: nil}
+	var expected = subscraping.Result{Type: subscraping.URL, Value: domain, Error: nil}
 
 	for _, source := range AllSources {
 		if source.NeedsKey() {
@@ -45,7 +45,7 @@ func TestSourcesWithoutKeys(t *testing.T) {
 
 				if result.Type != subscraping.Error {
 					assert.True(t, strings.HasSuffix(strings.ToLower(result.Value), strings.ToLower(expected.Value)),
-						fmt.Sprintf("result(%s) is not subdomain of %s", strings.ToLower(result.Value), expected.Value))
+						fmt.Sprintf("result(%s) is not url of %s", strings.ToLower(result.Value), expected.Value))
 				} else {
 					assert.Equal(t, reflect.TypeOf(expected.Error), reflect.TypeOf(result.Error), fmt.Sprintf("%s: %s", result.Source, result.Error))
 				}

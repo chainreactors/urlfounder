@@ -31,14 +31,14 @@ func init() {
 	}
 }
 
-// Agent is a struct for running passive subdomain enumeration
+// Agent is a struct for running passive url enumeration
 // against a given host. It wraps subscraping package and provides
 // a layer to build upon.
 type Agent struct {
 	sources []subscraping.Source
 }
 
-// New creates a new agent for passive subdomain discovery
+// New creates a new agent for passive url discovery
 func New(sourceNames, excludedSourceNames []string, useAllSources, useSourcesSupportingRecurse bool) *Agent {
 	sources := make(map[string]subscraping.Source, len(AllSources))
 

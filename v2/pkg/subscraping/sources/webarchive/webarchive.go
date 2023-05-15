@@ -17,7 +17,7 @@ type Source struct {
 	skipped   bool
 }
 
-// Run function returns all subdomains found with the service
+// Run function returns all urls found with the service
 func (s *Source) Run(ctx context.Context, domain string, session *subscraping.Session) <-chan subscraping.Result {
 	results := make(chan subscraping.Result)
 	s.errors = 0
@@ -58,7 +58,7 @@ func (s *Source) Run(ctx context.Context, domain string, session *subscraping.Se
 		resp.Body.Close()
 
 		for _, r := range res[1:] {
-			results <- subscraping.Result{Source: s.Name(), Type: subscraping.Subdomain, Value: r[0]}
+			results <- subscraping.Result{Source: s.Name(), Type: subscraping.URL, Value: r[0]}
 			s.results++
 		}
 

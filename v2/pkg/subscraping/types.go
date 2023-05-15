@@ -26,7 +26,7 @@ type Statistics struct {
 // Source is an interface inherited by each passive source
 type Source interface {
 	// Run takes a domain as argument and a session object
-	// which contains the extractor for subdomains, http client
+	// which contains the extractor for urls, http client
 	// and other stuff.
 	Run(context.Context, string, *Session) <-chan Result
 
@@ -38,7 +38,7 @@ type Source interface {
 	IsDefault() bool
 
 	// HasRecursiveSupport returns true if the current source
-	// accepts subdomains (e.g. subdomain.domain.tld),
+	// accepts urls (e.g. url.domain.tld),
 	// not just root domains.
 	HasRecursiveSupport() bool
 
@@ -54,7 +54,7 @@ type Source interface {
 // Session is the option passed to the source, an option is created
 // uniquely for each source.
 type Session struct {
-	// Extractor is the regex for subdomains created for each domain
+	// Extractor is the regex for urls created for each domain
 	Extractor *regexp.Regexp
 	// Client is the current http client
 	Client *http.Client
@@ -75,6 +75,6 @@ type ResultType int
 
 // Types of results returned by the source
 const (
-	Subdomain ResultType = iota
+	URL ResultType = iota
 	Error
 )
