@@ -13,15 +13,13 @@ fork from https://github.com/projectdiscovery/subfinder
   <a href="#urlfounder-go-library">Library</a> •
   <a href="#wiki">Wiki</a>
 </p>
----
 
 `urlfounder` is a url discovery tool that returns valid urls for domain, using passive online sources. 
 
 # Features
 
 <h1 align="left">
-  <img src="static/urlfounder-run.png" alt="urlfounder" width="700px"></a>
-  <br>
+  <img src="static/urlfounder-run.png" alt="urlfounder" width="700px" >
 </h1>
 
 - Probe and extract key information, such as title, status code
@@ -40,57 +38,52 @@ This will display help for the tool. Here are all the switches it supports.
 
 ```
 Usage:
-  ./urlfounder [flags]
+./urlfounder [flags]
 
 Flags:
 INPUT:
-   -d, -domain string[]  domains to find urls for
-   -dL, -list string     file containing list of domains for url discovery
+    -d, -domain string[]  domains to find urls for
+    -dL, -list string     file containing list of domains for url discovery
 
-SOURCE:
-   -s, -sources string[]           specific sources to use for discovery. Use -ls to display all available sources.
-   -all                            use all sources for enumeration (slow)
-   -es, -exclude-sources string[]  sources to exclude from enumeration (-es alienvault,zoomeye)
-
-
+    SOURCE:
+    -s, -sources string[]           specific sources to use for discovery. Use -ls to display all available sources.
+    -all                            use all sources for enumeration (slow)
+    -es, -exclude-sources string[]  sources to exclude from enumeration (-es alienvault,zoomeye)
 
 FILTER:
-   -m, -match string[]   url or list of url to match (file or comma separated)
-   -f, -filter string[]   url or list of url to filter (file or comma separated)
+    -m, -match string[]   url or list of url to match (file or comma separated)
+    -f, -filter string[]   url or list of url to filter (file or comma separated)
 
 RATE-LIMIT:
-   -rl, -rate-limit int  maximum number of http requests to send per second
-   -t int                number of concurrent goroutines for resolving (-active 
-                                                                                only) (default 10)
+    -rl, -rate-limit int  maximum number of http requests to send per second
+    -t int                number of concurrent goroutines for resolving (-active only) (default 10)
 
 OUTPUT:
-   -o, -output string       file to write output to
-   -oJ, -json               write output in JSONL(ines) format
-   -oD, -output-dir string  directory to write output (-dL only)
-   -cs, -collect-sources    include all sources in the output (-json only)      
-   -silent             show only urls in output
-   -version            show version of urlfounder
-   -v                  show verbose output
-   -nc, -no-color      disable color in output
-   -ls, -list-sources  list all available sources
-   -stats              report source statistics
+    -o, -output string       file to write output to
+    -oJ, -json               write output in JSONL(ines) format
+    -oD, -output-dir string  directory to write output (-dL only)
+    -cs, -collect-sources    include all sources in the output (-json only)
+    -sT, -status             include StatusCode in output
+    -tI, -title              include url titles in output
+
+CONFIGURATION:
+    -config string                flag config file (default "/root/.config/urlfounder/config.yaml")
+    -pc, -provider-config string  provider config file (default "/root/.config/urlfounder/provider-config.yaml")
+    -r string[]                   comma separated list of resolvers to use
+    -aC, -active                  display active urls only
+    -proxy string                 http proxy to use with urlfounder
+
+DEBUG:
+    -silent             show only urls in output
+    -version            show version of urlfounder
+    -v                  show verbose output
+    -nc, -no-color      disable color in output
+    -ls, -list-sources  list all available sources
+    -stats              report source statistics
 
 OPTIMIZATION:
-   -timeout int   seconds to wait before timing out (default 30)
-   -max-time int  minutes to wait for enumeration results (default 10)
-
-
-Process finished with the exit code 0
-   -silent             show only urls in output
-   -version            show version of urlfounder
-   -v                  show verbose output
-   -nc, -no-color      disable color in output
-   -ls, -list-sources  list all available sources
-   -stats              report source statistics
-
-OPTIMIZATION:
-   -timeout int   seconds to wait before timing out (default 30)
-   -max-time int  minutes to wait for enumeration results (default 10)
+    -timeout int   seconds to wait before timing out (default 30)
+    -max-time int  minutes to wait for enumeration results (default 10)
 ```
 
 # Installation
@@ -192,10 +185,6 @@ func main() {
 	fmt.Printf("%s", data)
 }
 ```
-
-</td>
-</tr>
-</table>
 
 ### Wiki
 
