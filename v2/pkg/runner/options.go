@@ -121,7 +121,7 @@ func ParseOptions() *Options {
 		flagSet.BoolVarP(&options.JSON, "json", "oJ", false, "write output in JSONL(ines) format"),
 		flagSet.StringVarP(&options.OutputDirectory, "output-dir", "oD", "", "directory to write output (-dL only)"),
 		flagSet.BoolVarP(&options.CaptureSources, "collect-sources", "cs", false, "include all sources in the output (-json only)"),
-		flagSet.BoolVarP(&options.StatusCode, "status", "sT", false, "include StatusCode in output"),
+		flagSet.BoolVarP(&options.StatusCode, "status", "sc", false, "include StatusCode in output"),
 		flagSet.BoolVarP(&options.Title, "title", "tI", false, "include url titles in output"),
 	)
 

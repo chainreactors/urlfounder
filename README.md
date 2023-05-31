@@ -65,7 +65,7 @@ OUTPUT:
     -oJ, -json               write output in JSONL(ines) format
     -oD, -output-dir string  directory to write output (-dL only)
     -cs, -collect-sources    include all sources in the output (-json only)
-    -sT, -status             include StatusCode in output
+    -sc, -status             include StatusCode in output
     -tI, -title              include url titles in output
 
 CONFIGURATION:
