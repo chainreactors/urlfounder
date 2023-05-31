@@ -5,6 +5,8 @@ fork from https://github.com/projectdiscovery/subfinder
 
 <h4 align="center">Fast passive url enumeration tool.</h4>
 
+![](https://socialify.git.ci/chainreactors/urlfounder/image?description=1&font=Inter&forks=1&issues=1&language=1&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Light)
+
 <p align="center">
   <a href="#features">Features</a> •
   <a href="#installation">Install</a> •
