@@ -121,29 +121,35 @@ webarchive: []
 To run the tool on a target, just use the following command.
 
 ```console
-urlfounder -d guancha.cn               
+./urlfounder -d projectdiscovery.io
 
-_____  _______________________                   _________            
+_____  _______________________                   _________
 __/ / / /__/ __ \__/ /___/ __/_________  ______________  /____________
 _/ / / /__/ /_/ /_/ / __/ /_ _/ __ \  / / /_  __ \  __  /_  _ \_  ___/
-/ /_/ / _  _, _/_/ /___/ __/ / /_/ / /_/ /_  / / / /_/ / /  __/  /    
+/ /_/ / _  _, _/_/ /___/ __/ / /_/ / /_/ /_  / / / /_/ / /  __/  /
 \____/  /_/ |_| /_____/_/    \____/\__,_/ /_/ /_/\__,_/  \___//_/   V0.0.1
 
-
-[INF] Enumerating urls for guancha.cn
-
-http://www.guancha.cn/xianggangpuxuan/2014_10_05_273239.shtml
-http://www.guancha.cn/third-world/2014_08_22_259264.shtml
-http://www.guancha.cn/third-world/2014_09_03_263371.shtml
-http://www.guancha.cn/europe/2014_08_22_259307.shtml
-http://guancha.cn
-http://www.guancha.cn/broken-news/2014_08_22_259268.shtml
-http://m.guancha.cn/
-http://www.guancha.cn/third-world/2014_08_15_256903_3.shtml
-http://www.guancha.cn/local/2014_08_07_254312.shtml
-http://www.guancha.cn/neighbors/2014_09_16_267550.shtml
-
-[INF] Found 10 urls for guancha.cn in 1 second 228 milliseconds
+[INF] Loading provider config from /root/.config/urlfounder/provider-config.yaml
+[INF] Enumerating urls for projectdiscovery.io
+https://projectdiscovery.io/
+https://chaos.projectdiscovery.io/
+https://dns.projectdiscovery.io/dns/%s/subdomainsinvalid
+https://dns.projectdiscovery.io/dns/%s/public
+https://dns.projectdiscovery.io/dns/projectdiscovery.io
+https://projectdiscovery.io
+https://dns.projectdiscovery.io/dns/%s/subdomains
+https://blog.projectdiscovery.io/abusing
+https://dns.projectdiscovery.io/dns/
+https://dns.projectdiscovery.io/dns/addinvalid
+http://projectdiscovery.io/
+https://projectdiscovery.io/open
+https://dns.projectdiscovery.io/dns/%s/subdomainsinternal
+https://nuclei.projectdiscovery.io
+https://nuclei.projectdiscovery.io/faq/templates/
+https://nuclei.projectdiscovery.io/templating
+https://cdn.projectdiscovery.io/cdn/cdn
+https://nuclei.projectdiscovery.io/faq/nuclei/
+[INF] Found 18 urls for projectdiscovery.io in 564 milliseconds 619 microseconds
 ```
 
 ## Urlfounder Go library
