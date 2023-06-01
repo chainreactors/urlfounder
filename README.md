@@ -9,11 +9,9 @@ fork from https://github.com/projectdiscovery/subfinder
 
 <p align="center">
   <a href="#features">Features</a> •
-  <a href="#installation">Install</a> •
   <a href="#running-urlfounder">Usage</a> •
   <a href="#post-installation-instructions">API Setup</a> •
   <a href="#urlfounder-go-library">Library</a> •
-  <a href="#wiki">Wiki</a>
 </p>
 
 `urlfounder` is a url discovery tool that returns valid urls for domain, using passive online sources. 
@@ -87,10 +85,6 @@ OPTIMIZATION:
     -timeout int   seconds to wait before timing out (default 30)
     -max-time int  minutes to wait for enumeration results (default 10)
 ```
-
-# Installation
-
-`urlfounder`requires **go1.19** to install successfully.
 
 ## Post Installation Instructions
 
@@ -196,7 +190,7 @@ func main() {
 
 ### Wiki
 
-- [Look at me !!!](https://chainreactors.github.io/wiki/)
+todo
 
 # THANKS
 
