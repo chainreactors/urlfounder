@@ -14,7 +14,8 @@ fork from https://github.com/projectdiscovery/subfinder
   <a href="#urlfounder-go-library">Library</a> •
 </p>
 
-`urlfounder` is a url discovery tool that returns valid urls for domain, using passive online sources. 
+`urlfounder` is a url discovery tool that returns valid urls for domain, using passive online sources.  If you need to actively fuzzing  http directory/file, [spray](https://github.com/chainreactors/spray) is the best choice.
+
 
 # Features
 
